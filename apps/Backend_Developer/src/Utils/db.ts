@@ -6,7 +6,7 @@ const uri = env.MONGO_URI;
 export async function createDBConnection() {
   try {
     const db = await mongoose.connect(uri, {
-      dbName: 'cafe_db',
+      dbName: 'MyCafe',
     });
     return db;
   } catch (error) {
