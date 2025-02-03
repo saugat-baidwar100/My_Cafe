@@ -6,7 +6,7 @@ import {
   getUsersService,
   updateUserService,
 } from './services';
-import { APIError } from '../../utils/error';
+import { APIError } from '../../Utils/error';
 
 export async function updateUserController(
   req: Request,
