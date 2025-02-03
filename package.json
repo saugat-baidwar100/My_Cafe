@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev:frontend": "yarn nx run Backend_Developer:serve",
-    "dev:backend": " yarn nx run Frontend_Developer:serve"
+    "dev:frontend": " yarn nx run Frontend_Developer:serve",
+    "dev:backend": "yarn nx run Backend_Developer:serve"
   },
   "private": true,
   "dependencies": {
