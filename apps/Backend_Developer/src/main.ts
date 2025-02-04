@@ -11,6 +11,7 @@ import { categoryRouter } from './Modules/Category/router';
 import { subCategoryRouter } from './Modules/Sub-Category/router';
 import { productRouter } from './Modules/Products/router';
 import { orderRouter } from './Modules/Order/router';
+import { cartRouter } from './Cart/router';
 
 // import { categoryRouter } from "./modules/Category/router";
 
@@ -61,6 +62,7 @@ app.use('/api/category', categoryRouter());
 app.use('/api/subcategory', subCategoryRouter());
 app.use('/api/product', productRouter);
 app.use('/api/order', orderRouter);
+app.use('/api/cart', cartRouter);
 // app.use('/admin', adminRouter());
 // review routes
 // app.use("/api/reviews", reviewRouter);
