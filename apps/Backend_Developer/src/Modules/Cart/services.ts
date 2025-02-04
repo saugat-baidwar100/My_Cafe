@@ -1,5 +1,5 @@
 import { Cart } from './model';
-import { APIError } from '../Utils/error';
+import { APIError } from '../../Utils/error';
 import mongoose from 'mongoose';
 
 // ✅ Add item to cart

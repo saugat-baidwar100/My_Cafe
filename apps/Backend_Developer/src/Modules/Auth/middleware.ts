@@ -1,40 +1,33 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { Request, Response, NextFunction } from 'express';
-import { TTokenPayload, verifyToken } from '../../Utils/auth';
+import { verifyToken, TTokenPayload } from '../../Utils/auth';
 
-export async function checkAuth(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+// Extend Express Request type to include 'user'
+declare global {
+  namespace Express {
+    interface Request {
+      user?: TTokenPayload;
+    }
+  }
+}
+
+export function checkAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies?.token || '';
+  if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
-  if (!token) {
-    res.status(401).json({ message: 'Unauthorized', isSuccess: false });
-    return;
-  }
+  const verifyResult = verifyToken(token);
+  if (!verifyResult.isValid)
+    return res.status(401).json({ message: verifyResult.message });
 
-  const verifyTokenOutput = verifyToken(token);
-  if (!verifyTokenOutput.isValid) {
-    res.status(401).json({
-      message: verifyTokenOutput.message,
-      isSuccess: false,
-    });
-    return;
-  }
-
-  req.user = verifyTokenOutput.payload as TTokenPayload;
+  req.user = verifyResult.payload as TTokenPayload;
   next();
 }
 
-export async function checkRole(
-  role: string,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  if (req.user.role !== role) {
-    res.status(403).json({ message: 'Forbidden', isSuccess: false });
-    return;
-  }
-  next();
+export function checkRole(role: 'user' | 'admin' | 'superadmin') {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user || req.user.role !== role) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    next();
+  };
 }

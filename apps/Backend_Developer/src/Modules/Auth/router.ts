@@ -1,23 +1,19 @@
-import { Router } from 'express';
-import {
-  loginController,
-  logoutController,
-  meController,
-  registerController,
-} from './controller';
+import express from 'express';
+import { registerController, loginController } from './controller';
+import { checkAuth, checkRole } from './middleware';
 
-function createAuthRouter() {
-  const router = Router();
+const router = express.Router();
 
-  router.post('/login', loginController);
-  router.post('/register', registerController);
-  router.post('/logout', logoutController);
-  router.get('/me', meController);
+router.post('/register', registerController);
+router.post('/login', loginController);
 
-  return router;
-}
+// Protected Routes
+router.get('/dashboard', checkAuth, checkRole('admin'), (req, res) => {
+  res.json({ message: 'Welcome to Admin Dashboard', user: req.user });
+});
 
-export const authRouter = createAuthRouter;
+router.get('/superadmin', checkAuth, checkRole('superadmin'), (req, res) => {
+  res.json({ message: 'Super Admin Access', user: req.user });
+});
 
-// router.get('/me', checkAuth, meController);
-// router.get('/admin', checkAuth, (req, res) => res.send('Admin route'));
+export default router;
