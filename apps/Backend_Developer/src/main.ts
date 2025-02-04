@@ -8,6 +8,8 @@ import { createDBConnection } from './Utils/db';
 import { APIError } from './Utils/error';
 import { authRouter } from './Modules/Auth/router';
 import { categoryRouter } from './Modules/Category/router';
+import { subCategoryRouter } from './Modules/Sub-Category/router';
+import { productRouter } from './Modules/Products/router';
 
 // import { categoryRouter } from "./modules/Category/router";
 
@@ -55,6 +57,8 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
 
 app.use('/auth', authRouter());
 app.use('/api/category', categoryRouter());
+app.use('/api/subcategory', subCategoryRouter());
+app.use('/api/product', productRouter);
 // app.use('/admin', adminRouter());
 // review routes
 // app.use("/api/reviews", reviewRouter);
