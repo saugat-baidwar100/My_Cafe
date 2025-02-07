@@ -1,10 +1,11 @@
-import NxWelcome from './nx-welcome';
+import { QueryClientProvider } from '../query';
+import { Approuter } from '../router';
 
-export function App() {
+function App() {
   return (
-    <div>
-      <NxWelcome title="Frontend_Developer" />
-    </div>
+    <QueryClientProvider>
+      <Approuter />
+    </QueryClientProvider>
   );
 }
 
