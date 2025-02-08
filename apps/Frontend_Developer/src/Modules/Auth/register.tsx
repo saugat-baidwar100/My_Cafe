@@ -5,15 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 // Zod schema for validation
 const registerSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
-  email: z
-    .string()
-    .email('Invalid email address')
-    .nonempty('Email is required'),
+  email: z.string().email('Invalid email address').min(1, 'Email is required'),
   password: z
     .string()
     .min(6, 'Password must be at least 6 characters')
-    .nonempty('Password is required'),
-  phonenumber: z.string().regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+    .min(1, 'Password is required'),
+  phonenumber: z
+    .string()
+    .regex(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
 });
 
 type RegisterFormInput = z.infer<typeof registerSchema>;
@@ -21,7 +20,7 @@ type RegisterFormInput = z.infer<typeof registerSchema>;
 const SignUpPage = () => {
   const {
     register,
-
+    handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormInput>({
     resolver: zodResolver(registerSchema),
@@ -33,11 +32,16 @@ const SignUpPage = () => {
     },
   });
 
+  const onSubmit = (data: RegisterFormInput) => {
+    console.log('Form Data:', data);
+    // Handle registration logic (e.g., API call)
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-semibold text-center mb-4">Sign Up</h1>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           {/* Username */}
           <div>
             <label
