@@ -1,7 +1,11 @@
+import { useLoginUserMutation } from "../../API/Auth/query";
+import { successToast, errorToast } from "../../toaster";
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Link, useNavigate } from "react-router-dom";
 
+// Validation schema
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters long'),
@@ -10,16 +14,38 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export function Login() {
+  const navigate = useNavigate();
+  const loginUserMutation = useLoginUserMutation();
+
+  // Form setup using React Hook Form
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
   });
 
+  // On form submit
   const onSubmit = (data: LoginFormInputs) => {
-    console.log('Login Data:', data);
+    loginUserMutation.mutateAsync(
+      {
+        email: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess(data) {
+          successToast(data.message);
+          reset();
+          navigate("/"); // Redirect to home page or dashboard
+        },
+        onError(error) {
+          console.error("error", error);
+          errorToast(error.message);
+        },
+      }
+    );
   };
 
   return (
@@ -77,9 +103,19 @@ export function Login() {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+            disabled={loginUserMutation.isPending}
           >
-            Login
+            {loginUserMutation.isPending ? "Logging in..." : "Login"}
           </button>
+
+          <div className="mt-4 text-center">
+            <p>
+              Don't have an account?{" "}
+              <Link className="text-blue-600 underline" to="/register">
+                Register
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
     </div>
